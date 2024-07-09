@@ -7,7 +7,6 @@ package controller;
 
 import coordinator.OrderCoordinator;
 import entity.Order;
-import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,10 +18,10 @@ import java.util.List;
 
 /**
  *
- * @author Legion
+ * @author admin
  */
-@WebServlet(name="HistoryOrderController", urlPatterns={"/history-order"})
-public class HistoryOrderController extends HttpServlet {
+@WebServlet(name="StaffOrderServlet", urlPatterns={"/staff-order"})
+public class StaffOrderServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -39,10 +38,10 @@ public class HistoryOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet HistoryOrderController</title>");  
+            out.println("<title>Servlet StaffOrderServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet HistoryOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet StaffOrderServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -59,11 +58,12 @@ public class HistoryOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        int userId = ((User)request.getSession().getAttribute("user")).getUserID();
         OrderCoordinator orderCoordinator = new OrderCoordinator();
-        List<Order> listOrder = orderCoordinator.getOrderService().getOrderHistoryByUserId(userId);
-        request.setAttribute("orders", listOrder);
-        request.getRequestDispatcher("history-order.jsp").forward(request, response);
+        List<Order> listOrders = orderCoordinator.getOrderService().getOrders();
+        request.setAttribute("orders", listOrders);
+        request.setAttribute("isSuccess", request.getParameter("updateResult"));
+        request.setAttribute("message", request.getParameter("message"));
+        request.getRequestDispatcher("staff-order.jsp").forward(request, response);
     } 
 
     /** 

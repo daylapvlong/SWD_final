@@ -6,7 +6,6 @@
 package controller;
 
 import coordinator.OrderCoordinator;
-import entity.Order;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,14 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  *
- * @author Legion
+ * @author admin
  */
-@WebServlet(name="StaffOrderController", urlPatterns={"/staff-order"})
-public class StaffOrderController extends HttpServlet {
+@WebServlet(name="UpdateOrderStatusServlet", urlPatterns={"/update-order-status"})
+public class UpdateOrderStatusServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -38,10 +36,10 @@ public class StaffOrderController extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet StaffOrderController</title>");  
+            out.println("<title>Servlet UpdateOrderStatusServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet StaffOrderController at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateOrderStatusServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,11 +56,20 @@ public class StaffOrderController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        OrderCoordinator orderCoordinator = new OrderCoordinator();
-        List<Order> listOrders = orderCoordinator.getOrderService().getOrders();
-        request.setAttribute("orders", listOrders);
-        request.setAttribute("isSuccess", request.getParameter("updateResult"));
-        request.getRequestDispatcher("staff-order.jsp").forward(request, response);
+        int orderID = Integer.parseInt(request.getParameter("orderID"));
+        String newStatus = request.getParameter("newStatus");
+        String oldStatus = request.getParameter("oldStatus");
+        
+        String error = "Can not change status to Canceled when order is delivering";
+        
+        OrderCoordinator coordinator = new OrderCoordinator();
+        if(oldStatus.equalsIgnoreCase("Delivering") && newStatus.equalsIgnoreCase("Cancelled")) {
+            response.sendRedirect("staff-order?updateResult=false&message=" + error);
+            return;
+        }
+        boolean updateResult = coordinator.getOrderService().updateStatus(orderID, newStatus);
+
+        response.sendRedirect("staff-order?updateResult="+updateResult);
     } 
 
     /** 

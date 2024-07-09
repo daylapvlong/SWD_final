@@ -29,7 +29,7 @@
             </c:if>
             <c:if test="${isSuccess ne null && !isSuccess}">
                 <div class="alert alert-danger alert-dismissible fade show mt-2" role="alert" id="mess">
-                    <strong>Save failed!</strong> You should check your network.
+                    <strong>Save failed!</strong> ${message ne null ? message : 'You should check your network.' }
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             </c:if>
@@ -54,6 +54,7 @@
                             <td>
                                 <form action="update-order-status">
                                     <input type="hidden" name="orderID" value="${order.orderID}">
+                                    <input type="hidden" name="oldStatus" value="${order.status}">
                                     <select class="form-select" name="newStatus">
                                         <option value="Paid" ${order.status eq 'Paid' ? 'selected' : ''}>Paid</option>
                                         <option value="Delivering" ${order.status eq 'Delivering' ? 'selected' : ''}>Delivering</option>

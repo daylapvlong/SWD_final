@@ -40,13 +40,11 @@
         padding-left: 11%;
     }
 </style>
-<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 <!-- Sidebar -->
 <nav class="sidebar">
     <ul>
-        <li><a href="staff-dashboard.jsp"><i class='bx bxs-bar-chart-alt-2 mr-2' ></i>Dashboard</a></li>
-        <li><a href="staff-order"><i class="fas fa-shopping-cart mr-2"></i>Orders</a></li>
-        <li><a href="login"><i class='bx bxs-log-out mr-2' ></i>LogOUT</a></li>
+        <li><a href="history-order"><i class="fas fa-shopping-cart mr-2"></i>History Order</a></li>
+        <li><a href="user-home.jsp"><i class="fas fa-shopping-cart mr-2"></i>Back to Home</a></li>
     </ul>
 </nav>

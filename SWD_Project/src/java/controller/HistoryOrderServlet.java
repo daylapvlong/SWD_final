@@ -5,6 +5,8 @@
 package controller;
 
 import coordinator.OrderCoordinator;
+import entity.Order;
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,13 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  *
- * @author Legion
+ * @author admin
  */
-@WebServlet(name = "UpdateOrderStatusController", urlPatterns = {"/update-order-status"})
-public class UpdateOrderStatusController extends HttpServlet {
+@WebServlet(name = "HistoryOrderServlet", urlPatterns = {"/history-order"})
+public class HistoryOrderServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -32,15 +35,15 @@ public class UpdateOrderStatusController extends HttpServlet {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
-        try (PrintWriter out = response.getWriter()) {
+        try ( PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateOrderStatusController</title>");
+            out.println("<title>Servlet HistoryOrderServlet</title>");            
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateOrderStatusController at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet HistoryOrderServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -58,15 +61,11 @@ public class UpdateOrderStatusController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int orderID = Integer.parseInt(request.getParameter("orderID"));
-        String newStatus = request.getParameter("newStatus");
-        
-        OrderCoordinator coordinator = new OrderCoordinator();
-        
-        boolean updateResult = coordinator.getOrderService().updateStatus(orderID, newStatus);
-
-        response.sendRedirect("staff-order?updateResult="+updateResult);
-
+        int userId = ((User)request.getSession().getAttribute("user")).getUserID();
+        OrderCoordinator orderCoordinator = new OrderCoordinator();
+        List<Order> listOrder = orderCoordinator.getOrderService().getOrderHistoryByUserId(userId);
+        request.setAttribute("orders", listOrder);
+        request.getRequestDispatcher("history-order.jsp").forward(request, response);
     }
 
     /**

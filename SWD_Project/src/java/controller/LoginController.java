@@ -85,10 +85,10 @@ public class LoginController extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             if(user.getRole().equalsIgnoreCase("customer")) {
-                response.sendRedirect("history-order"); 
+                response.sendRedirect("user-home.jsp"); 
             }
             else if(user.getRole().equalsIgnoreCase("staff")) {
-                response.sendRedirect("staff-order"); 
+                response.sendRedirect("staff-dashboard.jsp"); 
             }
             
         } else {
