@@ -1,55 +1,41 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package impl;
 
-import dal.DBContext;
-import entity.User;
+import model.User;
 import service.UserService;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-/**
- *
- * @author Legion
- */
-public class UserServiceImpl extends DBContext implements UserService{
-    
-    Connection connection;
 
-    public UserServiceImpl() {
-        try {
-            this.connection = getConnection();
-        } catch (Exception e) {
-        }
+public class UserServiceImpl implements UserService {
+    private Connection connection;
+
+    public UserServiceImpl(Connection connection) {
+        this.connection = connection;
     }
-    
-    @Override
-    public User authenticate(String username, String password) {
-        String query = "SELECT * FROM [User] WHERE UserName = ? AND Password = ?";
-        try (PreparedStatement ps = connection.prepareStatement(query)) {
-            ps.setString(1, username);
-            ps.setString(2, password);
-            ResultSet rs = ps.executeQuery();
 
+    @Override
+    public User getUserById(int userId) {
+        String sql = "SELECT * FROM [User] WHERE UserId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, userId);
+            ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                User user = new User();
-                user.setUserID(rs.getInt("UserId"));
-                user.setUsername(rs.getString("UserName"));
-                user.setPassword(rs.getString("Password"));
-                user.setName(rs.getString("Name"));
-                user.setPhone(rs.getString("Phone"));
-                user.setEmail(rs.getString("Email"));
-                user.setAddress(rs.getString("Address"));
-                user.setRole(rs.getString("Role"));
-                return user;
+                return new User(
+                    rs.getInt("UserId"),
+                    rs.getString("UserName"),
+                    rs.getString("Password"),
+                    rs.getString("Name"),
+                    rs.getString("Phone"),
+                    rs.getString("Email"),
+                    rs.getString("Address"),
+                    rs.getString("Role")
+                );
             }
         } catch (SQLException e) {
-            System.out.println("authenticate: " + e.getMessage());
+            System.out.println(e);
         }
         return null;
     }
