@@ -40,7 +40,7 @@ public class BookServiceImpl extends DBContext implements BookService{
                 book.setBookId(rs.getInt("BookId"));
                 book.setCommentId(rs.getInt("CommentId"));
                 book.setCategoryId(rs.getInt("CategoryId"));
-                book.setBookName(rs.getString("setBookName"));
+                book.setBookName(rs.getString("BookName"));
                 book.setAuthor(rs.getString("Author"));
                 book.setPublisher(rs.getString("Publisher"));
                 book.setPrice(rs.getFloat("Price"));

@@ -4,6 +4,7 @@
     Author     : admin's
 --%>
 
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -24,26 +25,28 @@
             <c:forEach items="${books}" var="item" varStatus="loop">
                 <div class="w3-quarter session-product">
                     <div>
-                        <h3>${item.BookName}</h3>
-                        <c:if test="${item.Description == ''}">
+                        <h3>${item.bookName}</h3>
+                        <c:if test="${item.description == ''}">
                             <p style="margin-top: 0px;">No description</p>
                         </c:if>
-                        <p style="margin-top: 0px;"> ${item.Description}</p>
-                        <p style="margin-top: 0px;"> ${item.Author}</p>
-                        <p style="margin-top: 0px;"> ${item.Publisher}</p>
-                        <p style="margin-top: 0px;">Quantity Left: ${item.StockQuantity}</p>
-
+                        <p style="margin-top: 0px;">${item.description}</p>
+                        <p style="margin-top: 0px;">${item.author}</p>
+                        <p style="margin-top: 0px;">${item.publisher}</p>
+                        <p style="margin-top: 0px;">Quantity Left: ${item.stockQuantity}</p>
                     </div>
                     <div class="price-addtocart">
                         <p class="text">${item.price}.000 ₫</p>
                         <form action="addtocart" method="post">
-                            <input name="productID" hidden value="${item.BookID}"></input>
-                            <input type="submit" name="add" value="Add to cart"
-                                   class="btn btn-addtocart">
+                            <input name="productID" hidden value="${item.bookID}"></input>
+                            <input type="submit" name="add" value="Add to cart" class="btn btn-addtocart">
                         </form>
                     </div>
                 </div>
             </c:forEach>
+            
+            <c:if test="${empty books}">
+                <p>No books available</p>
+            </c:if>
         </div>
     </body>
 </html>

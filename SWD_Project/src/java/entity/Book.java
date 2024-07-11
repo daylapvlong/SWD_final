@@ -11,102 +11,100 @@ import java.util.Date;
  * @author admin's
  */
 public class Book {
-    private int BookId;
-    private int CommentId;
-    private int CategoryId;
-    private String BookName;
-    private String Author;
-    private String Publisher;
-    private float Price;
-    private String Description;
-    private int StockQuantity;
+    private int bookId;
+    private int commentId;
+    private int categoryId;
+    private String bookName;
+    private String author;
+    private String publisher;
+    private float price;
+    private String description;
+    private int stockQuantity;
 
     public Book() {
     }
-    
-    public Book(int BookId, int CommentId, int CategoryId, String BookName, String Author, String Publisher, float Price, String Description, int StockQuantity) {
-        this.BookId = BookId;
-        this.CommentId = CommentId;
-        this.CategoryId = CategoryId;
-        this.BookName = BookName;
-        this.Author = Author;
-        this.Publisher = Publisher;
-        this.Price = Price;
-        this.Description = Description;
-        this.StockQuantity = StockQuantity;
+
+    public Book(int bookId, int commentId, int categoryId, String bookName, String author, String publisher, float price, String description, int stockQuantity) {
+        this.bookId = bookId;
+        this.commentId = commentId;
+        this.categoryId = categoryId;
+        this.bookName = bookName;
+        this.author = author;
+        this.publisher = publisher;
+        this.price = price;
+        this.description = description;
+        this.stockQuantity = stockQuantity;
     }
 
     public int getBookId() {
-        return BookId;
+        return bookId;
     }
 
-    public void setBookId(int BookId) {
-        this.BookId = BookId;
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
     }
 
     public int getCommentId() {
-        return CommentId;
+        return commentId;
     }
 
-    public void setCommentId(int CommentId) {
-        this.CommentId = CommentId;
+    public void setCommentId(int commentId) {
+        this.commentId = commentId;
     }
 
     public int getCategoryId() {
-        return CategoryId;
+        return categoryId;
     }
 
-    public void setCategoryId(int CategoryId) {
-        this.CategoryId = CategoryId;
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
     }
 
     public String getBookName() {
-        return BookName;
+        return bookName;
     }
 
     public void setBookName(String bookName) {
-        this.BookName = bookName;
+        this.bookName = bookName;
     }
 
     public String getAuthor() {
-        return Author;
+        return author;
     }
 
-    public void setAuthor(String Author) {
-        this.Author = Author;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
     public String getPublisher() {
-        return Publisher;
+        return publisher;
     }
 
-    public void setPublisher(String Publisher) {
-        this.Publisher = Publisher;
+    public void setPublisher(String publisher) {
+        this.publisher = publisher;
     }
 
     public float getPrice() {
-        return Price;
+        return price;
     }
 
-    public void setPrice(float Price) {
-        this.Price = Price;
+    public void setPrice(float price) {
+        this.price = price;
     }
 
     public String getDescription() {
-        return Description;
+        return description;
     }
 
-    public void setDescription(String Description) {
-        this.Description = Description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public int getStockQuantity() {
-        return StockQuantity;
+        return stockQuantity;
     }
 
-    public void setStockQuantity(int StockQuantity) {
-        this.StockQuantity = StockQuantity;
+    public void setStockQuantity(int stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
-
-    
 }
