@@ -13,4 +13,5 @@ import java.util.List;
  */
 public interface CookieService {
     List<Book> CookieToProduct(String cart);
+    String addToCart(String cart, String bookId);
 }
