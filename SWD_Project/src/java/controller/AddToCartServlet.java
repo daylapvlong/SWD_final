@@ -4,9 +4,6 @@
  */
 package controller;
 
-import coordinator.BookCoordinator;
-import coordinator.CartCoordinator;
-import entity.Book;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,16 +12,13 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.List;
-import utils.HandleCookie;
 
 /**
  *
  * @author admin's
  */
-@WebServlet(name = "HomeController", urlPatterns = {"/home"})
-public class HomeController extends HttpServlet {
+@WebServlet(name = "AddToCartServlet", urlPatterns = {"/addtocart"})
+public class AddToCartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,22 +31,44 @@ public class HomeController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // count product
+        String bookId = request.getParameter("bookId");
         Cookie[] cookies = request.getCookies();
-        CartCoordinator cartCoordinator = new CartCoordinator();
-
-        int countProduct = 0;
+        String cart = "";
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals("cart")) {
-                if (cookie.getValue() != "") {
-                    countProduct = cartCoordinator.getCookieService().CookieToProduct(cookie.getValue()).size();
-                }
+                cart = cookie.getValue();
+                cookie.setMaxAge(0);
+                response.addCookie(cookie);
+                break;
             }
         }
-        request.setAttribute("countProduct", countProduct);
-    }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+        if (cart.isEmpty()) {
+            cart = bookId + ":" + 1;
+        } else {
+            String[] books = cart.split("/");
+            boolean isExist = false;
+            for (int i = 0; i < books.length; i++) {
+                String[] product = books[i].split(":");
+                if (product[0].equals(bookId)) {
+                    int quantity = Integer.parseInt(product[1]) + 1;
+                    books[i] = bookId + ":" + quantity;
+                    isExist = true;
+                    break;
+                }
+            }
+            cart = books[0];
+            for (int i = 1; i < books.length; i++) {
+                cart += "/" + books[i];
+            }
+            if (!isExist) {
+                cart += "/" + bookId + ":" + 1;
+            }
+        }
+        Cookie cookie = new Cookie("cart", cart);
+        cookie.setMaxAge(60 * 60 * 24);
+        response.addCookie(cookie);
+        response.sendRedirect("home");
+        }
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -64,32 +80,7 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BookCoordinator bookCoordinator = new BookCoordinator();
-        CartCoordinator cartCoordinator = new CartCoordinator();
-        List<Book> listBooks = bookCoordinator.getBookService().getAllBook();
-        
-        List<Book> listBookCart = new ArrayList<>();
-        Cookie[] cookies = request.getCookies();
-        String cart = "";
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("cart")) {
-                cart = cookie.getValue();
-                break;
-            }
-        }
-        
-        if (!cart.equals("")) {
-            // get list product from cookie
-            listBookCart = cartCoordinator.getCookieService().CookieToProduct(cart);
-            request.setAttribute("data", listBookCart);
-
-            // get number of product
-            int countProduct = listBookCart.size();
-            request.setAttribute("countProduct", countProduct);
-        }
-        
-        request.setAttribute("listBooks", listBooks);
-        request.getRequestDispatcher("home.jsp").forward(request, response);
+        processRequest(request, response);
     }
 
     /**
@@ -115,5 +106,4 @@ public class HomeController extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
 }

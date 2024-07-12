@@ -6,6 +6,7 @@ package impl;
 
 import dal.DBContext;
 import entity.Book;
+import entity.User;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -53,6 +54,63 @@ public class BookServiceImpl extends DBContext implements BookService{
             System.out.println(ex);
         }
         return null;
+    }
+    
+    @Override
+    public Book getBookById(int bookId) {
+        String sql = "SELECT b.BookId, b.BookName, b.Author, b.Publisher, " +
+                "b.Description, b.Price, b.StockQuantity, b.CommentId, b.CategoryId " +
+                "FROM Book b " +
+                "LEFT JOIN Comment c ON b.CommentId = c.CommentId " +
+                "LEFT JOIN [User] u ON c.UserId = u.UserId " +
+                "WHERE b.BookId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, bookId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                Book book = new Book();
+                book.setBookId(rs.getInt("BookId"));
+                book.setCommentId(rs.getInt("CommentId"));
+                book.setCategoryId(rs.getInt("CategoryId"));
+                book.setBookName(rs.getString("BookName"));
+                book.setAuthor(rs.getString("Author"));
+                book.setPublisher(rs.getString("Publisher"));
+                book.setPrice(rs.getFloat("Price"));
+                book.setDescription(rs.getString("Description"));
+                book.setStockQuantity(rs.getInt("StockQuantity"));
+
+                return book;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    @Override
+    public void updateBookStatus(int bookId, int status) {
+        String sql = "UPDATE Book SET Status = ? WHERE BookId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, status);
+            st.setInt(2, bookId);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+
+    @Override
+    public void deleteBookById(int bookId) {
+        String sql = "DELETE FROM Book WHERE BookId = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, bookId);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
     }
     
     public static void main(String[] args) {

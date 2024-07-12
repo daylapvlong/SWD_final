@@ -4,7 +4,6 @@
  */
 package controller;
 
-import coordinator.BookCoordinator;
 import coordinator.CartCoordinator;
 import entity.Book;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.List;
 import utils.HandleCookie;
@@ -23,8 +23,8 @@ import utils.HandleCookie;
  *
  * @author admin's
  */
-@WebServlet(name = "HomeController", urlPatterns = {"/home"})
-public class HomeController extends HttpServlet {
+@WebServlet(name = "DisplayCartServlet", urlPatterns = {"/cart"})
+public class DisplayCartServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -37,19 +37,19 @@ public class HomeController extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // count product
-        Cookie[] cookies = request.getCookies();
-        CartCoordinator cartCoordinator = new CartCoordinator();
-
-        int countProduct = 0;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("cart")) {
-                if (cookie.getValue() != "") {
-                    countProduct = cartCoordinator.getCookieService().CookieToProduct(cookie.getValue()).size();
-                }
-            }
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet DisplayCartServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet DisplayCartServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
         }
-        request.setAttribute("countProduct", countProduct);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -64,11 +64,9 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        BookCoordinator bookCoordinator = new BookCoordinator();
+        List<Book> listBook = new ArrayList<>();
         CartCoordinator cartCoordinator = new CartCoordinator();
-        List<Book> listBooks = bookCoordinator.getBookService().getAllBook();
-        
-        List<Book> listBookCart = new ArrayList<>();
+
         Cookie[] cookies = request.getCookies();
         String cart = "";
         for (Cookie cookie : cookies) {
@@ -77,19 +75,27 @@ public class HomeController extends HttpServlet {
                 break;
             }
         }
-        
         if (!cart.equals("")) {
             // get list product from cookie
-            listBookCart = cartCoordinator.getCookieService().CookieToProduct(cart);
-            request.setAttribute("data", listBookCart);
+            listBook = cartCoordinator.getCookieService().CookieToProduct(cart);
+            System.out.println("co" + cart + " book" + listBook);
+            request.setAttribute("data", listBook);
 
             // get number of product
-            int countProduct = listBookCart.size();
+            int countProduct = listBook.size();
             request.setAttribute("countProduct", countProduct);
+        } else {
+            // Handle case where listBook is null (e.g., log an error)
+            System.out.println("Error: Failed to retrieve products from cookie.");
+            // Optionally, you can set an error message or redirect to an error page.
         }
-        
-        request.setAttribute("listBooks", listBooks);
-        request.getRequestDispatcher("home.jsp").forward(request, response);
+
+        request.getRequestDispatcher("cart.jsp").forward(request, response);
+
+        // remove message
+        HttpSession session = request.getSession();
+        session.removeAttribute("signupmessage");
+        session.removeAttribute("loginmessage");
     }
 
     /**
@@ -103,7 +109,15 @@ public class HomeController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        try {
+            String cart = request.getParameter("cart");
+            Cookie cookie = new Cookie("cart", cart);
+            cookie.setMaxAge(60 * 60 * 24);
+            response.addCookie(cookie);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+        response.sendRedirect("cart");
     }
 
     /**
