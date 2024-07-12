@@ -64,31 +64,31 @@ public class Request extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private DAO bookDAO;
-    private static final long serialVersionUID = 1L;
     private BookCoordinator bookCoordinator;
     private UserCoordinator userCoordinator;
-    
-    
+
+    @Override
     public void init() {
         DBContext dbContext = new DBContext();
         this.bookCoordinator = new BookCoordinator(dbContext);
         this.userCoordinator = new UserCoordinator(dbContext);
     }
 
-    @Override
+     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
+         System.out.println("Action: " + action);
         if (action != null && action.equals("updateStatus")) {
             int bookId = Integer.parseInt(request.getParameter("bookId"));
             int status = Integer.parseInt(request.getParameter("status"));
+            //System.out.println(bookId + " " + status);
             bookCoordinator.getBookService().updateBookStatus(bookId, status);
             response.sendRedirect("request");
         } else {
             doGet(request, response);
         }
     }
-    
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
@@ -111,6 +111,9 @@ public class Request extends HttpServlet {
         RequestDispatcher dispatcher = request.getRequestDispatcher("request.jsp");
         dispatcher.forward(request, response);
     }
+
+    
+    
 
     /**
      * Handles the HTTP <code>POST</code> method.

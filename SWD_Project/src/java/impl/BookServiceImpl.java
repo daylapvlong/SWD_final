@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookServiceImpl implements BookService {
+
     private Connection connection;
 
     public BookServiceImpl(Connection connection) {
@@ -21,11 +22,11 @@ public class BookServiceImpl implements BookService {
     public List<Book> getAllBooks() {
         List<Book> listB = new ArrayList<>();
 
-        String sql = "SELECT b.BookId, b.BookName, b.Author, b.Publisher, " +
-                "b.Description, b.Price, b.StockQuantity, b.CommentId, b.CategoryId, b.Status, u.Name " +
-                "FROM Book b " +
-                "LEFT JOIN Comment c ON b.CommentId = c.CommentId " +
-                "LEFT JOIN [User] u ON c.UserId = u.UserId";
+        String sql = "SELECT b.BookId, b.BookName, b.Author, b.Publisher, "
+                + "b.Description, b.Price, b.StockQuantity, b.CommentId, b.CategoryId, b.Status, u.Name "
+                + "FROM Book b "
+                + "LEFT JOIN Comment c ON b.CommentId = c.CommentId "
+                + "LEFT JOIN [User] u ON c.UserId = u.UserId";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -58,12 +59,12 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public Book getBookById(int bookId) {
-        String sql = "SELECT b.BookId, b.BookName, b.Author, b.Publisher, " +
-                "b.Description, b.Price, b.StockQuantity, b.CommentId, b.CategoryId, b.Status, u.Name " +
-                "FROM Book b " +
-                "LEFT JOIN Comment c ON b.CommentId = c.CommentId " +
-                "LEFT JOIN [User] u ON c.UserId = u.UserId " +
-                "WHERE b.BookId = ?";
+        String sql = "SELECT b.BookId, b.BookName, b.Author, b.Publisher, "
+                + "b.Description, b.Price, b.StockQuantity, b.CommentId, b.CategoryId, b.Status, u.Name "
+                + "FROM Book b "
+                + "LEFT JOIN Comment c ON b.CommentId = c.CommentId "
+                + "LEFT JOIN [User] u ON c.UserId = u.UserId "
+                + "WHERE b.BookId = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, bookId);
@@ -98,13 +99,12 @@ public class BookServiceImpl implements BookService {
     @Override
     public void updateBookStatus(int bookId, int status) {
         String sql = "UPDATE Book SET Status = ? WHERE BookId = ?";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, status);
-            st.setInt(2, bookId);
-            st.executeUpdate();
+        try ( PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, status);
+            stmt.setInt(2, bookId);
+            stmt.executeUpdate();
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
     }
 
@@ -119,7 +119,7 @@ public class BookServiceImpl implements BookService {
             System.out.println(e);
         }
     }
-    
+
     public static void main(String[] args) {
         DBContext dbContext = new DBContext();
         BookServiceImpl bookService = new BookServiceImpl(dbContext.getConnection());

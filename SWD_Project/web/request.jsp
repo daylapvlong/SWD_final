@@ -119,8 +119,7 @@
                                 <div class="cell cell-100 text-fff">PUBLISHER</div>
                                 <div class="cell cell-200 text-fff">NAME</div>
                                 <div class="cell cell-100p text-fff">USER</div>
-                                <div class="cell cell-100p text-fff"></div>
-                                <div class="cell cell-100p text-fff"></div>
+
                                 <div class="cell cell-100 text-center text-fff">STATUS</div>
                                 <div class="cell cell-100 text-center text-fff">EDIT</div>
                             </div>
@@ -132,21 +131,12 @@
                                         <div class="cell cell-100">${book.publisher}</div>
                                         <div class="cell cell-200"><a href="#">${book.bookName}</a></div>
                                         <div class="cell cell-100p"><a href="#">${book.user.name}</a></div>
-                                        <div class="cell cell-100p"><a href="Request?action=delete&bookId=${book.bookId}" class="btnRemove fa fa-remove bg-1 text-fff" onclick="return confirm('Do you really want to remove it?')"></a></div>
-                                        <div class="cell cell-100p">
-                                            <form action="Request" method="post">
-                                                <input type="hidden" name="action" value="updateStatus">
-                                                <input type="hidden" name="bookId" value="${book.bookId}">
-                                                <select name="status" onchange="this.form.submit()">
-                                                    <option value="1" ${book.status == 1 ? 'selected' : ''}>Pending</option>
-                                                    <option value="2" ${book.status == 2 ? 'selected' : ''}>Approved</option>
-                                                    <option value="3" ${book.status == 3 ? 'selected' : ''}>Rejected</option>
-                                                </select>
-                                            </form>
-                                        </div>
+
                                         <div class="cell cell-100 text-center">${book.status == 1 ? 'Pending' : book.status == 2 ? 'Approved' : 'Rejected'}</div>
                                         <div class="cell cell-100 text-center">
                                             <a href="request?action=edit&bookId=${book.bookId}" class="btnEdit fa fa-pencil bg-1 text-fff"></a>
+                                            <a href="request?action=delete&bookId=${book.bookId}" class="btnRemove fa fa-remove bg-1 text-fff" onclick='return confirm("Do you really want to remove it ?")'></a>
+
                                         </div>
                                     </li>
                                 </c:forEach>
@@ -155,44 +145,45 @@
                     </form>
 
                     <!-- DETAIL FORM -->
-                    <form action="request" method="post" enctype="multipart/form-data" class="form">
+                    <form action="request" method="POST" class="form">
+                        <input type="hidden" name="action" value="updateStatus" >
                         <div class="formHeader row">
                             <h2 class="text-1 fl">Product Detail</h2>
                             <div class="fr">
-                                <button type="submit" class="btnSave bg-1 text-fff text-bold fr">SAVE</button>
+                                <button type="submit" class="btnSave bg-1 text-fff text-bold fr" >SAVE</button>
                             </div>
                         </div>
                         <div class="formBody row">
                             <div class="column s-6">
                                 <label class="inputGroup">
                                     <span>ID</span>
-                                    <span><input type="text" name="bookId" readonly value="${book.bookId}"></span>
+                                    <span><input type="text" name="bookId" value="${book.bookId}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>Author</span>
-                                    <span><input type="text" name="author" readonly value="${book.author}"></span>
+                                    <span><input type="text" value="${book.author}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>Publisher</span>
-                                    <span><input type="text" name="publisher" readonly value="${book.publisher}"></span>
+                                    <span><input type="text" value="${book.publisher}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>Name</span>
-                                    <span><input type="text" name="bookName" readonly value="${book.bookName}"></span>
+                                    <span><input type="text" value="${book.bookName}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>User Name</span>
-                                    <span><input type="text" name="userName" readonly value="${book.user.name}"></span>
+                                    <span><input type="text" value="${book.user.name}" readonly></span>
                                 </label>
                             </div>
                             <div class="column s-6">
                                 <label class="inputGroup">
                                     <span>Price</span>
-                                    <span><input type="text" name="price" readonly value="${book.price}"></span>
+                                    <span><input type="text" value="${book.price}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>Stock Quantity</span>
-                                    <span><input type="text" name="stockQuantity" readonly value="${book.stockQuantity}"></span>
+                                    <span><input type="text" value="${book.stockQuantity}" readonly></span>
                                 </label>
                                 <label class="inputGroup">
                                     <span>Status</span>
@@ -209,7 +200,7 @@
                             <div class="column">
                                 <label class="inputGroup">
                                     <span>Description</span>
-                                    <textarea name="description" readonly>${book.description}</textarea>
+                                    <textarea readonly>${book.description}</textarea>
                                 </label>
                             </div>
                         </div>
