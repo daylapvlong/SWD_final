@@ -4,6 +4,7 @@
  */
 package controller;
 
+import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -31,7 +32,9 @@ public class AddToCartServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String bookId = request.getParameter("bookId");
+        User user = ((User)request.getSession().getAttribute("user"));
+        if(user != null) {
+            String bookId = request.getParameter("bookId");
         Cookie[] cookies = request.getCookies();
         String cart = "";
         for (Cookie cookie : cookies) {
@@ -68,6 +71,10 @@ public class AddToCartServlet extends HttpServlet {
         cookie.setMaxAge(60 * 60 * 24);
         response.addCookie(cookie);
         response.sendRedirect("home");
+        } else {
+            response.sendRedirect("login");
+        }
+        
         }
     /**
      * Handles the HTTP <code>GET</code> method.
