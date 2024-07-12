@@ -4,6 +4,7 @@
  */
 package controller;
 
+import coordinator.CartCoordinator;
 import entity.User;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -32,50 +33,34 @@ public class AddToCartServlet extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        User user = ((User)request.getSession().getAttribute("user"));
-        if(user != null) {
+        User user = ((User) request.getSession().getAttribute("user"));
+        CartCoordinator cartCoordinator = new CartCoordinator();
+
+        if (user != null) {
             String bookId = request.getParameter("bookId");
-        Cookie[] cookies = request.getCookies();
-        String cart = "";
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("cart")) {
-                cart = cookie.getValue();
-                cookie.setMaxAge(0);
-                response.addCookie(cookie);
-                break;
-            }
-        }
-        if (cart.isEmpty()) {
-            cart = bookId + ":" + 1;
-        } else {
-            String[] books = cart.split("/");
-            boolean isExist = false;
-            for (int i = 0; i < books.length; i++) {
-                String[] product = books[i].split(":");
-                if (product[0].equals(bookId)) {
-                    int quantity = Integer.parseInt(product[1]) + 1;
-                    books[i] = bookId + ":" + quantity;
-                    isExist = true;
+            Cookie[] cookies = request.getCookies();
+            String cart = "";
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("cart")) {
+                    cart = cookie.getValue();
+                    cookie.setMaxAge(0);
+                    response.addCookie(cookie);
                     break;
                 }
             }
-            cart = books[0];
-            for (int i = 1; i < books.length; i++) {
-                cart += "/" + books[i];
-            }
-            if (!isExist) {
-                cart += "/" + bookId + ":" + 1;
-            }
-        }
-        Cookie cookie = new Cookie("cart", cart);
-        cookie.setMaxAge(60 * 60 * 24);
-        response.addCookie(cookie);
-        response.sendRedirect("home");
+            
+            cart = cartCoordinator.getCookieService().addToCart(cart, bookId);
+            
+            Cookie cookie = new Cookie("cart", cart);
+            cookie.setMaxAge(60 * 60 * 24);
+            response.addCookie(cookie);
+            response.sendRedirect("home");
         } else {
             response.sendRedirect("login");
         }
-        
-        }
+
+    }
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *

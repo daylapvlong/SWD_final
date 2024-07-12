@@ -15,7 +15,8 @@ import service.CookieService;
  *
  * @author ASUS PC
  */
-public class HandleCookie implements CookieService{    
+public class HandleCookie implements CookieService {
+
     @Override
     public List<Book> CookieToProduct(String cookie) {
         try {
@@ -52,24 +53,30 @@ public class HandleCookie implements CookieService{
         return null;
     }
 
-//    public static List<OrderDetail> CookieToOrderDetail(String cookie, int orderID) {
-//        String[] listProductString = cookie.split("/");
-//        List<OrderDetail> OrderDetails = new ArrayList<>();
-//        for (String productString : listProductString) {
-//            String[] item = productString.split(":");
-//            try {
-//                int productID = Integer.parseInt(item[0]);
-//                int quantity = Integer.parseInt(item[1]);
-//                OrderDetail orderDetail = new OrderDetail();
-//                orderDetail.setOrderID(orderID);
-//                orderDetail.setProductID(productID);
-//                orderDetail.setQuantity(quantity);
-//                OrderDetails.add(orderDetail);
-//
-//            } catch (Exception e) {
-//                return null;
-//            }
-//        }
-//        return OrderDetails;
-//    }
+    @Override
+    public String addToCart(String cart, String bookId) {
+        if (cart.isEmpty()) {
+            cart = bookId + ":" + 1;
+        } else {
+            String[] books = cart.split("/");
+            boolean isExist = false;
+            for (int i = 0; i < books.length; i++) {
+                String[] product = books[i].split(":");
+                if (product[0].equals(bookId)) {
+                    int quantity = Integer.parseInt(product[1]) + 1;
+                    books[i] = bookId + ":" + quantity;
+                    isExist = true;
+                    break;
+                }
+            }
+            cart = books[0];
+            for (int i = 1; i < books.length; i++) {
+                cart += "/" + books[i];
+            }
+            if (!isExist) {
+                cart += "/" + bookId + ":" + 1;
+            }
+        }
+        return cart;
+    }
 }
