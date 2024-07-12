@@ -24,7 +24,7 @@ public class DBContext {
    
   
     private final String serverName = "DESKTOP-FGLJ0EA";
-    private final String dbName = "Bookstore";
+    private final String dbName = "Bookstore2";
     private final String portNumber = "1433";
     private final String instance="";
     private final String userID = "hiep742003";
