@@ -55,7 +55,7 @@
                                 <span class='badge badge-warning' id='lblCartCount' style="border-radius: 60rem;">${countProduct}</span>
                             </a>
                             <a class="btn btn-outline-success my-2 my-sm-0 mr-3" href="history-order">Profile</a>
-                            <a class="btn btn-outline-success my-2 my-sm-0 mr-2" href="login">Log out</a>
+                            <a class="btn btn-outline-success my-2 my-sm-0 mr-2" href="logout">Log out</a>
                         </c:if>
                             
                     </form>
